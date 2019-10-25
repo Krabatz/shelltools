@@ -1,14 +1,14 @@
 # shelltools
 
-Useful shell scripts for developers
+Useful shell scripts for developers.
 
 ## Project Cd, Build, Run, Stop
 
-The scripts pcd.sh, pbuild.sh, prun.sh and pstop.sh are shortcuts on commandline in order to change dir to a certain project and build, run or stop a certain project.
+The scripts pcd.sh, pbuild.sh, prun.sh and pstop.sh are shortcuts on commandline in order to change dir to a certain project and build, run or stop a certain project. The 'p' in pcd stands for 'project'.
 
 ### General setup
 
-Setup these settings before usind the scripts
+Setup these settings before using the scripts:
 
 #### Configuration
 
@@ -18,13 +18,13 @@ Example:
 
 ```javascript
 projectConfigArray=(
-	'myproject###/path/to/project'
-	'myproject2###/path/to/project2'
+    'myproject###/path/to/project'
+    'myproject2###/path/to/project2'
 )
 
 buildConfigArray=(
     'myproject###mvn clean install'
-	'myproject2###mvn -Pproject2 compile'
+    'myproject2###mvn -Pproject2 compile'
 )
 
 runConfigArray=(
@@ -62,7 +62,7 @@ source <path_to>/pcd_autocomplete.bash
 
 ### pcd.sh
 
-This script changes to the configured directory of a certain project folder.
+This script changes to the configured directory of a certain project.
 
 #### Usage
 
@@ -72,7 +72,7 @@ cdp myproject
 
 ### pbuild.sh
 
-This script changes to the directory of a certain project folder and executes the configured build command.
+This script executes the configured "build" command. If not already there, it changes to the directory of the project in the first place. 
 
 #### Usage
 
@@ -89,7 +89,7 @@ build
 
 ### prun.sh
 
-This script changes to the directory of a certain project folder and executes the configured start command.
+This script executes the configured "run" command. If not already there, it changes to the directory of the project in the first place. 
 
 #### Usage
 
@@ -106,7 +106,7 @@ run
 
 ### pstop.sh
 
-This script changes to the directory of a certain project folder and executes the configured stop command.
+This script executes the configured "stop" command. If not already there, it changes to the directory of the project in the first place. 
 
 #### Usage
 

@@ -1,12 +1,12 @@
 # Structure: "project ### path"
 projectConfigArray=(
-	'myproject###/path/to/project'
-	'myproject2###/path/to/project2'
+    'myproject###/path/to/project'
+    'myproject2###/path/to/project2'
 )
 
 buildConfigArray=(
     'myproject###mvn clean install'
-	'myproject2###mvn -Pproject2 compile'
+    'myproject2###mvn -Pproject2 compile'
 )
 
 runConfigArray=(
