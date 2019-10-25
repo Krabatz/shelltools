@@ -17,6 +17,7 @@ Copy pcd.config.sample to pcd.config and adapt the settings to your needs.
 Example:
 
 ```javascript
+# Structure: "project ### path"
 projectConfigArray=(
     'myproject###/path/to/project'
     'myproject2###/path/to/project2'
