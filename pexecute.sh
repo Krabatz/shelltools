@@ -76,6 +76,8 @@ function buildDefault {
 
 	if [[ -f "pom.xml" ]];then
 		runCommand "mvn clean install"
+	elif [[ -f "build.gradle" ]];then
+		runCommand "./gradlew bootJar"
 	elif [[ -f "package.json" ]];then
 		#echo "npm pack"
 		#source npm pack
@@ -90,6 +92,8 @@ function runDefault {
 
 	if [[ -f "pom.xml" ]];then
 		runCommand "mvn spring-boot:run"
+	elif [[ -f "build.gradle" ]];then
+		runCommand "./gradlew bootRun"
 	elif [[ -f "Vagrantfile" ]];then
 		runCommand "vagrant up"
 	elif [[ -f "package.json" ]];then
