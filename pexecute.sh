@@ -77,7 +77,7 @@ function buildDefault {
 	if [[ -f "pom.xml" ]];then
 		runCommand "mvn clean install"
 	elif [[ -f "build.gradle" ]];then
-		runCommand "./gradlew bootJar"
+		runCommand "./gradlew compileJava"
 	elif [[ -f "package.json" ]];then
 		#echo "npm pack"
 		#source npm pack
