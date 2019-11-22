@@ -68,7 +68,7 @@ function runCommand {
 	runCmd=$*
 
 	echo "${runCmd}"
-	${runCmd}
+	eval ${runCmd}
 }
 
 function buildDefault {
