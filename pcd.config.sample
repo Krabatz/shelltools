@@ -6,7 +6,12 @@ projectConfigArray=(
 
 buildConfigArray=(
     'myproject###mvn clean install'
-    'myproject2###mvn -Pproject2 compile'
+    'myproject2###./gradlew compileJava'
+)
+
+testConfigArray=(
+    'myproject###mvn test'
+    'myproject2###./gradlew test'
 )
 
 runConfigArray=(

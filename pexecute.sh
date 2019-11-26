@@ -44,6 +44,15 @@ function initialize {
 
 			map_put $configMap ${key} ${value}
 		done
+	elif [[ "${MY_EXEC_NAME}" == "test" ]];then
+		for line in "${testConfigArray[@]}" ; do
+			key="${line%\#\#\#*}"
+			value="${line#*\#\#\#}"
+
+			#echo "run - configMap: $configMap - key: ${key} - value: ${value}"
+
+			map_put $configMap ${key} ${value}
+		done
 	else
 		for line in "${buildConfigArray[@]}" ; do
 			key="${line%\#\#\#*}"
@@ -77,11 +86,23 @@ function buildDefault {
 	if [[ -f "pom.xml" ]];then
 		runCommand "mvn clean install"
 	elif [[ -f "build.gradle" ]];then
-		runCommand "./gradlew compileJava"
+		runCommand "./gradlew clean compileJava"
 	elif [[ -f "package.json" ]];then
 		#echo "npm pack"
 		#source npm pack
 		runCommand "npm pack"
+	else
+		echo "No project found"
+	fi
+}
+
+function testDefault {
+	#echo "testDefault"
+
+	if [[ -f "pom.xml" ]];then
+		runCommand "mvn test"
+	elif [[ -f "build.gradle" ]];then
+		runCommand "./gradlew clean compileJava test"
 	else
 		echo "No project found"
 	fi
@@ -133,6 +154,8 @@ function execApplication {
 			runDefault
 		elif [[ "${MY_EXEC_NAME}" == "stop" ]];then
 			stopDefault
+		elif [[ "${MY_EXEC_NAME}" == "test" ]];then
+			testDefault
 		else
 			buildDefault
 		fi

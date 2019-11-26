@@ -40,6 +40,8 @@ complete -o default -o nospace -F _script cdp
 complete -o default -o nospace -F _script cds
 complete -o default -o nospace -F _script prun.sh
 complete -o default -o nospace -F _script run
+complete -o default -o nospace -F _script ptest.sh
+complete -o default -o nospace -F _script ptest
 complete -o default -o nospace -F _script pstop.sh
 complete -o default -o nospace -F _script stop
 complete -o default -o nospace -F _script pbuild.sh
