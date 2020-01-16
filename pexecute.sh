@@ -40,7 +40,7 @@ function initialize {
 			key="${line%\#\#\#*}"
 			value="${line#*\#\#\#}"
 
-			#echo "run - configMap: $configMap - key: ${key} - value: ${value}"
+			#echo "stop - configMap: $configMap - key: ${key} - value: ${value}"
 
 			map_put $configMap ${key} ${value}
 		done
@@ -49,11 +49,11 @@ function initialize {
 			key="${line%\#\#\#*}"
 			value="${line#*\#\#\#}"
 
-			#echo "run - configMap: $configMap - key: ${key} - value: ${value}"
+			#echo "test - configMap: $configMap - key: ${key} - value: ${value}"
 
 			map_put $configMap ${key} ${value}
 		done
-	else
+	elif [[ "${MY_EXEC_NAME}" == "build" ]];then
 		for line in "${buildConfigArray[@]}" ; do
 			key="${line%\#\#\#*}"
 			value="${line#*\#\#\#}"
