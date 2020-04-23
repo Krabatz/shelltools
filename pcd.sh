@@ -22,6 +22,11 @@ MY_LIB_DIR="$MY_DIR"
 source ${MY_LIB_DIR}lib_shelltools.sh
 
 function initialize {
+	if [[ -n "$PCD_ALREADY_INITIALIZED" ]];then
+	# Only one initialization per session. Start new Bash for new configurations
+		return
+	fi
+
 	# Load configuration
 	source ${MY_DIR}pcd.config
 
@@ -38,6 +43,8 @@ function initialize {
 
 	    map_put $cdSourceMap ${key} ${value}
 	done
+
+	export PCD_ALREADY_INITIALIZED=true
 }
 
 function cdSource {

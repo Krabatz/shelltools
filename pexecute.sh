@@ -18,6 +18,11 @@ MY_LIB_DIR="$MY_DIR"
 source ${MY_LIB_DIR}lib_shelltools.sh
 
 function initialize {
+	if [[ -n "$PEXEC_ALREADY_INITIALIZED" ]];then
+		# Only one initialization per session. Start new Bash for new configurations
+		return
+	fi
+
 	# Load configuration
 	source ${MY_DIR}pcd.config
 
@@ -63,6 +68,8 @@ function initialize {
 			map_put $configMap ${key} ${value}
 		done
 	fi
+
+	export PEXEC_ALREADY_INITIALIZED=true
 }
 
 function changeToApplicationDir {
@@ -84,7 +91,7 @@ function buildDefault {
 	#echo "buildDefault"
 
 	if [[ -f "pom.xml" ]];then
-		runCommand "mvn clean install"
+		runCommand "mvn clean compile"
 	elif [[ -f "build.gradle" ]];then
 		runCommand "./gradlew clean compileJava"
 	elif [[ -f "package.json" ]];then
