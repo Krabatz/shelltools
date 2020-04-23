@@ -21,9 +21,14 @@ MY_LIB_DIR="$MY_DIR"
 # Load libraries
 source ${MY_LIB_DIR}lib_shelltools.sh
 
+function setup {
+	DRYRUN=""
+	CD_DIR=""
+}
+
 function initialize {
 	if [[ -n "$PCD_ALREADY_INITIALIZED" ]];then
-	# Only one initialization per session. Start new Bash for new configurations
+		# Only one initialization per session. Start new Bash for new configurations
 		return
 	fi
 
@@ -60,6 +65,13 @@ function cdSource {
 
 	if [ -n "$projectPath" ]; then
 		echo "cd $projectPath"
+
+		if [[ "$DRYRUN" == "true" ]];then
+			echo ""
+			echo "== Dry run. Did not execute command. =="
+			return
+		fi
+
 		cd $projectPath
 	else
 		echo "No project found"
@@ -111,15 +123,26 @@ function parseCommandoLineParameters {
 			-l|--list)
 				usageOperations;;
 			--shortlist)
-				usageShortlist;;
+				PCD_ALREADY_INITIALIZED="";
+				COMMAND="usageShortlist";;
+			--dryrun)
+				DRYRUN=true;;
 			*)
-				cdSource $1
+				CD_DIR=$1;
+				COMMAND="cdSource";;
 	   esac
 	   shift
 	done
 }
 
-initialize
+setup
 
 parseCommandoLineParameters $@
 
+initialize
+
+if [[ "$COMMAND" == "usageShortlist" ]];then
+	usageShortlist
+elif [[ "$COMMAND" == "cdSource" ]];then
+	cdSource $CD_DIR
+fi
