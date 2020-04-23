@@ -109,7 +109,7 @@ function testDefault {
 	if [[ -f "pom.xml" ]];then
 		runCommand "mvn test"
 	elif [[ -f "build.gradle" ]];then
-		runCommand "./gradlew clean compileJava test"
+		runCommand "./gradlew test"
 	else
 		echo "No project found"
 	fi
