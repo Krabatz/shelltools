@@ -34,45 +34,45 @@ function initialize {
 	# allexport: Automatically exports all variables and functions that you create or modify after giving this command.
 	set -a
 		
-	configMap=${MY_EXEC_NAME}_configMap_
+	configMap="run"_configMap_
+	for line in "${runConfigArray[@]}" ; do
+		key="${line%\#\#\#*}"
+		value="${line#*\#\#\#}"
 
-	if [[ "${MY_EXEC_NAME}" == "run" ]];then
-		for line in "${runConfigArray[@]}" ; do
-			key="${line%\#\#\#*}"
-			value="${line#*\#\#\#}"
+		#echo "run - configMap: $configMap - key: ${key} - value: ${value}"
 
-			#echo "run - configMap: $configMap - key: ${key} - value: ${value}"
+		map_put $configMap ${key} ${value}
+	done
 
-			map_put $configMap ${key} ${value}
-		done
-	elif [[ "${MY_EXEC_NAME}" == "stop" ]];then
-		for line in "${stopConfigArray[@]}" ; do
-			key="${line%\#\#\#*}"
-			value="${line#*\#\#\#}"
+	configMap="stop"_configMap_
+	for line in "${stopConfigArray[@]}" ; do
+		key="${line%\#\#\#*}"
+		value="${line#*\#\#\#}"
 
-			#echo "stop - configMap: $configMap - key: ${key} - value: ${value}"
+		#echo "stop - configMap: $configMap - key: ${key} - value: ${value}"
 
-			map_put $configMap ${key} ${value}
-		done
-	elif [[ "${MY_EXEC_NAME}" == "test" ]];then
-		for line in "${testConfigArray[@]}" ; do
-			key="${line%\#\#\#*}"
-			value="${line#*\#\#\#}"
+		map_put $configMap ${key} ${value}
+	done
 
-			#echo "test - configMap: $configMap - key: ${key} - value: ${value}"
+	configMap="test"_configMap_
+	for line in "${stopConfigArray[@]}" ; do
+		key="${line%\#\#\#*}"
+		value="${line#*\#\#\#}"
 
-			map_put $configMap ${key} ${value}
-		done
-	elif [[ "${MY_EXEC_NAME}" == "build" ]];then
-		for line in "${buildConfigArray[@]}" ; do
-			key="${line%\#\#\#*}"
-			value="${line#*\#\#\#}"
+		#echo "stop - configMap: $configMap - key: ${key} - value: ${value}"
 
-			#echo "build - configMap: $configMap - key: ${key} - value: ${value}"
+		map_put $configMap ${key} ${value}
+	done
 
-			map_put $configMap ${key} ${value}
-		done
-	fi
+	configMap="build"_configMap_
+	for line in "${stopConfigArray[@]}" ; do
+		key="${line%\#\#\#*}"
+		value="${line#*\#\#\#}"
+
+		#echo "stop - configMap: $configMap - key: ${key} - value: ${value}"
+
+		map_put $configMap ${key} ${value}
+	done
 
 	export PEXEC_ALREADY_INITIALIZED=true
 }
@@ -162,6 +162,7 @@ function execApplication {
 		return
 	fi
 
+	configMap=${MY_EXEC_NAME}_configMap_
 	projectCmd=$(map_get $configMap $APPLICATION_DIR)
 
 	#echo "MY_EXEC_NAME: ${MY_EXEC_NAME} - projectCmd: $projectCmd - configMap: $configMap"
