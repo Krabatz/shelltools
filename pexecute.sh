@@ -55,21 +55,21 @@ function initialize {
 	done
 
 	configMap="test"_configMap_
-	for line in "${stopConfigArray[@]}" ; do
+	for line in "${testConfigArray[@]}" ; do
 		key="${line%\#\#\#*}"
 		value="${line#*\#\#\#}"
 
-		#echo "stop - configMap: $configMap - key: ${key} - value: ${value}"
+		#echo "test - configMap: $configMap - key: ${key} - value: ${value}"
 
 		map_put $configMap ${key} ${value}
 	done
 
 	configMap="build"_configMap_
-	for line in "${stopConfigArray[@]}" ; do
+	for line in "${buildConfigArray[@]}" ; do
 		key="${line%\#\#\#*}"
 		value="${line#*\#\#\#}"
 
-		#echo "stop - configMap: $configMap - key: ${key} - value: ${value}"
+		#echo "build - configMap: $configMap - key: ${key} - value: ${value}"
 
 		map_put $configMap ${key} ${value}
 	done
