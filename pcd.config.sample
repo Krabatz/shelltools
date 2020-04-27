@@ -19,6 +19,10 @@ runConfigArray=(
     'myproject2###startproject2.sh'
 )
 
+runAliasConfigArray=(
+	'myproject###docker###docker-compose up'
+)
+
 stopConfigArray=(
     'myproject2###stopproject2.sh'
 )

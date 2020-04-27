@@ -23,10 +23,10 @@ function setup {
 }
 
 function initialize {
-	if [[ -n "$PEXEC_ALREADY_INITIALIZED" ]];then
+	#if [[ -n "$PEXEC_ALREADY_INITIALIZED" ]];then
 		# Only one initialization per session. Start new Bash for new configurations
-		return
-	fi
+#		return
+#	fi
 
 	# Load configuration
 	source ${MY_DIR}pcd.config
@@ -40,6 +40,16 @@ function initialize {
 		value="${line#*\#\#\#}"
 
 		#echo "run - configMap: $configMap - key: ${key} - value: ${value}"
+
+		map_put $configMap ${key} ${value}
+	done
+
+	configMap="runAlias"_configMap_
+	for line in "${runAliasConfigArray[@]}" ; do
+		key="${line%\#\#\#*}"
+		value="${line#*\#\#\#*\#\#\#}"
+
+		#echo "runAlias - configMap: $configMap - key: ${key} - value: ${value}"
 
 		map_put $configMap ${key} ${value}
 	done
@@ -78,8 +88,12 @@ function initialize {
 }
 
 function changeToApplicationDir {
-	if [ -n "$1" ]; then
-		source $MY_DIR"pcd.sh" $1
+	if [ -n "$PARAM_PROJECT_NAME" ]; then
+		source $MY_DIR"pcd.sh" --no-warning $PARAM_PROJECT_NAME
+
+		if [[ "$RETURN_CODE" == "NO_PORJECT_FOUND" ]];then
+			PARAM_EXEC_ALIAS=$PARAM_PROJECT_NAME
+		fi
 	fi
 
 	APPLICATION_DIR="$(basename `pwd`)"
@@ -162,10 +176,18 @@ function execApplication {
 		return
 	fi
 
-	configMap=${MY_EXEC_NAME}_configMap_
-	projectCmd=$(map_get $configMap $APPLICATION_DIR)
+	key=$APPLICATION_DIR
+	configMapName=${MY_EXEC_NAME}
 
-	#echo "MY_EXEC_NAME: ${MY_EXEC_NAME} - projectCmd: $projectCmd - configMap: $configMap"
+	if [[ -n "$PARAM_EXEC_ALIAS" ]];then
+		key="${key}###${PARAM_EXEC_ALIAS}"
+		configMapName="${configMapName}Alias"
+	fi
+
+	configMap=${configMapName}_configMap_
+	projectCmd=$(map_get $configMap $key)
+
+	# echo "configMap: ${configMap} - key: $key - projectCmd: $projectCmd"
 
 	if [ -n "$projectCmd" ]; then
 		runCommand $projectCmd
@@ -184,7 +206,7 @@ function execApplication {
 
 function usage {
 	echo ""
-	echo "Usage: ${MY_EXEC_NAME} [-h | --help] <projectname>"
+	echo "Usage: ${MY_EXEC_NAME} [-h | --help] [alias] [<projectname>]"
 	echo ""
 	echo " -h | --help     : Prints this help."
 	echo ""
@@ -201,11 +223,19 @@ function parseCommandoLineParameters {
 			--dryrun)
 				DRYRUN=true;;
 			*)
+				break
         		;;
 	   esac
 
 	   shift
 	done
+
+	if [[ -n "$2" ]];then
+		PARAM_EXEC_ALIAS=$1
+		PARAM_PROJECT_NAME=$2
+	else
+		PARAM_PROJECT_NAME=$1
+	fi
 }
 
 setup

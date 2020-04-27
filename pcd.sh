@@ -73,8 +73,14 @@ function cdSource {
 		fi
 
 		cd $projectPath
+
+		RETURN_CODE=""
 	else
-		echo "No project found"
+		RETURN_CODE="NO_PORJECT_FOUND"
+
+		if [[ -z "$PARAM_NO_WARNING" ]];then
+			echo "No project found"
+		fi
 	fi
 }
 
@@ -84,6 +90,7 @@ function usage {
 	echo ""
 	echo " -h | --help     : Prints this help."
 	echo " -l | --list     : Prints a list of all available projects."
+	echo " --no-warning    : No info or warning is printed out."
 
 	#exit 1
 }
@@ -127,6 +134,8 @@ function parseCommandoLineParameters {
 				COMMAND="usageShortlist";;
 			--dryrun)
 				DRYRUN=true;;
+			--no-warning)
+				PARAM_NO_WARNING=true;;
 			*)
 				CD_DIR=$1;
 				COMMAND="cdSource";;
