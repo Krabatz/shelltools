@@ -26,3 +26,7 @@ runAliasConfigArray=(
 stopConfigArray=(
     'myproject2###stopproject2.sh'
 )
+
+stopAliasConfigArray=(
+    'myproject###docker###docker-compose stop'
+)

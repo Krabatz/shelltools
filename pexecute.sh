@@ -23,10 +23,10 @@ function setup {
 }
 
 function initialize {
-	#if [[ -n "$PEXEC_ALREADY_INITIALIZED" ]];then
+	if [[ -n "$PEXEC_ALREADY_INITIALIZED" ]];then
 		# Only one initialization per session. Start new Bash for new configurations
-#		return
-#	fi
+		return
+	fi
 
 	# Load configuration
 	source ${MY_DIR}pcd.config
@@ -60,6 +60,16 @@ function initialize {
 		value="${line#*\#\#\#}"
 
 		#echo "stop - configMap: $configMap - key: ${key} - value: ${value}"
+
+		map_put $configMap ${key} ${value}
+	done
+
+	configMap="stopAlias"_configMap_
+	for line in "${stopAliasConfigArray[@]}" ; do
+		key="${line%\#\#\#*}"
+		value="${line#*\#\#\#*\#\#\#}"
+
+		#echo "stopAlias - configMap: $configMap - key: ${key} - value: ${value}"
 
 		map_put $configMap ${key} ${value}
 	done
