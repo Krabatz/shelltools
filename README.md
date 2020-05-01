@@ -82,7 +82,7 @@ stopAliasConfigArray=(
 
 Add the folder of the scripts to the PATH variable.
 
-#### Aliases
+#### Aliases [optional]
 
 Add the following aliases to your ~/.alias file:
 
@@ -94,7 +94,7 @@ alias testp='source ptest.sh'
 alias stop='source pstop.sh'
 ```
 
-#### Bash completion
+#### Bash completion [optional]
 
 Add the following to your ~/.bash_profile or ~/.bashrc:
 
