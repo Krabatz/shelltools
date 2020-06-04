@@ -226,6 +226,9 @@ function usage {
 }
 
 function parseCommandoLineParameters {
+	PARAM_EXEC_ALIAS=""
+	PARAM_PROJECT_NAME=""
+
 	while [ "$1" != "" ]; do
 		case $1 in
 			-h|--help)
