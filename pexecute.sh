@@ -181,23 +181,53 @@ function stopDefault {
 	fi
 }
 
-function execApplication {
+function execute {
 	if [ -z "$APPLICATION_DIR" ]; then
 		return
 	fi
 
+	if [[ -n "$PARAM_EXEC_ALIAS" ]];then
+		execAlias
+	else
+		execNormal
+	fi
+}
+
+function execAlias {
 	key=$APPLICATION_DIR
 	configMapName=${MY_EXEC_NAME}
 
-	if [[ -n "$PARAM_EXEC_ALIAS" ]];then
-		key="${key}###${PARAM_EXEC_ALIAS}"
-		configMapName="${configMapName}Alias"
-	fi
+	key="${key}###${PARAM_EXEC_ALIAS}"
+	configMapName="${configMapName}Alias"
 
 	configMap=${configMapName}_configMap_
 	projectCmd=$(map_get $configMap $key)
 
 	# echo "configMap: ${configMap} - key: $key - projectCmd: $projectCmd"
+
+	if [[ -z "$projectCmd" ]];then
+		echo "No command found. Script aborted."
+
+		return
+	fi
+
+	execProjectCmd $projectCmd
+}
+
+function execNormal {
+	key=$APPLICATION_DIR
+	configMapName=${MY_EXEC_NAME}
+
+	configMap=${configMapName}_configMap_
+	projectCmd=$(map_get $configMap $key)
+
+	# echo "configMap: ${configMap} - key: $key - projectCmd: $projectCmd"
+
+	execProjectCmd $projectCmd
+}
+
+function execProjectCmd {
+	projectCmd=$*
 
 	if [ -n "$projectCmd" ]; then
 		runCommand $projectCmd
@@ -219,6 +249,7 @@ function usage {
 	echo "Usage: ${MY_EXEC_NAME} [-h | --help] [alias] [<projectname>]"
 	echo ""
 	echo " -h | --help     : Prints this help."
+	echo " --dryrun        : Dry run. Prints the command without executing it."
 	echo ""
 	echo "This program ${MY_EXEC_NAME} executes a certain command according to the given <projectname>. configuration in pcd.config"
 
@@ -234,6 +265,8 @@ function parseCommandoLineParameters {
 			-h|--help)
 				usage;;
 			--dryrun)
+				DRYRUN=true;;
+			--dryRun)
 				DRYRUN=true;;
 			*)
 				break
@@ -260,6 +293,6 @@ if [[ -z "${NO_RUN}" ]]; then
 
 	changeToApplicationDir "$1"
 
-	execApplication
+	execute
 fi
 
