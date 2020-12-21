@@ -4,12 +4,14 @@
 #
 # Author: Jan Mutter (info@jayefem.de), 2017-2019
 #
-# Modify pcd.config for configuration
+# For configuration copy _shelltools to .shelltools and put it to:
+# - Your home directory (e.g. ~/.shelltools) or
+# - This directory (e.g. /shelltools/.shelltools)
 #
 
 #MY_DIR=$(dirname $0)
 MY_DIR=""
-MY_NAME="cd"
+MY_NAME="cdp"
 if [[ ! "$0" =~ "bash" ]]; then
 	# If not called from alias
 	MY_DIR=`dirname $0`/
@@ -26,6 +28,16 @@ function setup {
 	CD_DIR=""
 }
 
+function loadConfiguration {
+	if [[ -f "${MY_DIR}pcd.config" ]]; then
+		source ${MY_DIR}pcd.config
+	elif [[ -f "${MY_DIR}.shelltools" ]]; then
+		source ${MY_DIR}.shelltools
+	elif [[ -f "${HOME}/.shelltools" ]]; then
+		source "${HOME}/.shelltools"
+	fi
+}
+
 function initialize {
 	if [[ -n "$PCD_ALREADY_INITIALIZED" ]];then
 		# Only one initialization per session. Start new Bash for new configurations
@@ -33,7 +45,7 @@ function initialize {
 	fi
 
 	# Load configuration
-	source ${MY_DIR}pcd.config
+	loadConfiguration
 
 	# allexport: Automatically exports all variables and functions that you create or modify after giving this command.
 	set -a
@@ -86,11 +98,21 @@ function cdSource {
 
 function usage {
 	echo ""
-	echo "Usage: ${MY_NAME} [-h | --help] [-l | --list] <projectname>"
+	echo "Usage: ${MY_NAME} [-h | --help] [-l | --list] [ --no-warning ] [ --dryrun ] <projectname>"
 	echo ""
 	echo " -h | --help     : Prints this help."
 	echo " -l | --list     : Prints a list of all available projects."
 	echo " --no-warning    : No info or warning is printed out."
+	echo " --dryrun        : Dry run. Prints the command without executing it."
+	echo ""
+	echo "This program changes directory to the configured directory of the given <projectname>."
+	echo ""
+	echo "For configuration copy _shelltools to .shelltools and put it to:"
+	echo " - Your home directory (e.g. ~/.shelltools) or"
+	echo " - This directory (e.g. /shelltools/.shelltools)"
+	echo ""
+	echo "See also https://github.com/jayefem/shelltools"
+	echo ""
 
 	#exit 1
 }

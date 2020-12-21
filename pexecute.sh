@@ -4,7 +4,9 @@
 #
 # Author: Jan Mutter (info@jayefem.de), 2017-2019
 #
-# Modify pcd.config for configuration
+# For configuration copy _shelltools to .shelltools and put it to:
+# - Your home directory (e.g. ~/.shelltools) or
+# - This directory (e.g. /shelltools/.shelltools)
 #
 # Script is not standalone but called by build.sh and run.sh
 # The following variables should be already set from calling script:
@@ -22,6 +24,17 @@ function setup {
 	DRYRUN=""
 }
 
+function loadConfiguration {
+	if [[ -f "${HOME}/.shelltools" ]]; then
+		source "${HOME}/.shelltools"
+	elif [[ -f "${MY_DIR}.shelltools" ]]; then
+		source ${MY_DIR}.shelltools
+	elif [[ -f "${MY_DIR}pcd.config" ]]; then
+		# Keep this for downward compatability
+		source ${MY_DIR}pcd.config
+	fi
+}
+
 function initialize {
 	if [[ -n "$PEXEC_ALREADY_INITIALIZED" ]];then
 		# Only one initialization per session. Start new Bash for new configurations
@@ -29,7 +42,7 @@ function initialize {
 	fi
 
 	# Load configuration
-	source ${MY_DIR}pcd.config
+	loadConfiguration
 
 	# allexport: Automatically exports all variables and functions that you create or modify after giving this command.
 	set -a
@@ -246,12 +259,19 @@ function execProjectCmd {
 
 function usage {
 	echo ""
-	echo "Usage: ${MY_EXEC_NAME} [-h | --help] [alias] [<projectname>]"
+	echo "Usage: ${MY_EXEC_NAME} [ -h | --help ] [ --dryrun ] [ <alias> ] [ <projectname> ]"
 	echo ""
 	echo " -h | --help     : Prints this help."
 	echo " --dryrun        : Dry run. Prints the command without executing it."
 	echo ""
-	echo "This program ${MY_EXEC_NAME} executes a certain command according to the given <projectname>. configuration in pcd.config"
+	echo "This program '${MY_EXEC_NAME}' executes a certain command according to the given <projectname>."
+	echo ""
+	echo "For configuration copy _shelltools to .shelltools and put it to:"
+	echo " - Your home directory (e.g. ~/.shelltools) or"
+	echo " - This directory (e.g. /shelltools/.shelltools)"
+	echo ""
+	echo "See also https://github.com/jayefem/shelltools"
+	echo ""
 
 	NO_RUN="true"
 }
