@@ -44,8 +44,10 @@ function initialize {
 	# Load configuration
 	loadConfiguration
 
-	# allexport: Automatically exports all variables and functions that you create or modify after giving this command.
-	set -a
+	if [[ "$PROFILE_SHELL" != "zsh" ]]; then
+		# allexport: Automatically exports all variables and functions that you create or modify after giving this command.
+		set -a
+	fi
 		
 	configMap="run"_configMap_
 	for line in "${runConfigArray[@]}" ; do
@@ -125,7 +127,7 @@ function changeToApplicationDir {
 function runCommand {
 	runCmd=$*
 
-	echo "${runCmd}"
+	echo "Run: ${runCmd}"
 
 	if [[ "$DRYRUN" == "true" ]];then
 		echo ""

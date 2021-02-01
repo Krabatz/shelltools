@@ -53,8 +53,9 @@ function map_put {
 
 	value=$*
 
-    #alias "${1}$2"="$3"
-	alias "${mapname}$key"="$value"
+	#echo "map_put: mapname: ${mapname} - key: ${key} - value: ${value}"
+
+	alias "${mapname}${key}"="${value}"
 }
 
 # map_get map_name key
@@ -62,7 +63,22 @@ function map_put {
 #
 function map_get
 {
-    alias "${1}$2" 2> /dev/null | awk -F"'" '{ print $2; }'
+	aliaskey=${1}${2}
+	aliasvalue=$(alias "${aliaskey}" 2> /dev/null)
+
+	#>&2 echo "map_get: aliaskey: ${aliaskey} - aliasvalue: ${aliasvalue}"
+
+	# MAPGET=$(alias "${aliaskey}" 2> /dev/null | awk -F"'" '{ print $2; }')
+
+	MAPGET=${aliasvalue#*=}
+
+	if [[ $MAPGET = \'* ]]; then
+		MAPGET=${MAPGET:1:${#MAPGET}-2}
+	fi
+
+	#>&2 echo "map_get: aliaskey: ${aliaskey} - MAPGET: ${MAPGET}"
+	
+	echo "$MAPGET"
 }
 
 # map_keys map_name 
@@ -88,12 +104,27 @@ function git_current_branch {
 ################ Init ################
 
 function initEnv {
+	U_NAME=$(uname)
 	OS_PLATFORM=$OS_DEFAULT
-	if [ "$(uname)" == "Darwin" ]; then
+	if [[ "$U_NAME" == "Darwin" ]]; then
 		OS_PLATFORM=$OS_MAC
-	elif [[ "$(uname)" == *"CYGWIN"* ]]; then
+	elif [[ "$U_NAME" == *"CYGWIN"* ]]; then
 		OS_PLATFORM=$OS_CYGWIN
     fi
+
+	if test -n "$ZSH_VERSION"; then
+		PROFILE_SHELL=zsh
+	elif test -n "$BASH_VERSION"; then
+		PROFILE_SHELL=bash
+	elif test -n "$KSH_VERSION"; then
+		PROFILE_SHELL=ksh
+	elif test -n "$FCEDIT"; then
+		PROFILE_SHELL=ksh
+	elif test -n "$PS3"; then
+		PROFILE_SHELL=unknown
+	else
+		PROFILE_SHELL=sh
+	fi
 }
 
 initEnv

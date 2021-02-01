@@ -39,7 +39,7 @@ Setup these settings before using the scripts:
 
 #### Configuration
 
-Copy pcd.config.sample to pcd.config and adapt the settings to your needs.
+Copy _shelltools to ~/.shelltools in your home directory and adapt the settings to your needs.
 
 Example:
 

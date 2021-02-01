@@ -7,15 +7,35 @@
 # For configuration copy _shelltools to .shelltools and put it to:
 # - Your home directory (e.g. ~/.shelltools) or
 # - This directory (e.g. /shelltools/.shelltools)
-#
+##
+
+if test -n "$ZSH_VERSION"; then
+  PROFILE_SHELL=zsh
+elif test -n "$BASH_VERSION"; then
+  PROFILE_SHELL=bash
+elif test -n "$KSH_VERSION"; then
+  PROFILE_SHELL=ksh
+elif test -n "$FCEDIT"; then
+  PROFILE_SHELL=ksh
+elif test -n "$PS3"; then
+  PROFILE_SHELL=unknown
+else
+  PROFILE_SHELL=sh
+fi
 
 #MY_DIR=$(dirname $0)
 MY_DIR=""
 MY_NAME="cdp"
-if [[ ! "$0" =~ "bash" ]]; then
-	# If not called from alias
-	MY_DIR=`dirname $0`/
-	MY_NAME=$(basename $0)
+
+if [[ "$PROFILE_SHELL" == "zsh" ]]; then
+	MY_PATH=$(where pcd.sh)
+	MY_DIR=`dirname $MY_PATH`/
+elif [[ "$PROFILE_SHELL" == "bash" ]]; then
+	if [[ ! "$0" =~ "bash" ]]; then
+		# If not called from alias
+		MY_DIR=`dirname $0`/
+		MY_NAME=$(basename $0)
+	fi
 fi
 
 MY_LIB_DIR="$MY_DIR"
@@ -29,12 +49,13 @@ function setup {
 }
 
 function loadConfiguration {
-	if [[ -f "${MY_DIR}pcd.config" ]]; then
-		source ${MY_DIR}pcd.config
+	if [[ -f "${HOME}/.shelltools" ]]; then
+		source "${HOME}/.shelltools"
 	elif [[ -f "${MY_DIR}.shelltools" ]]; then
 		source ${MY_DIR}.shelltools
-	elif [[ -f "${HOME}/.shelltools" ]]; then
-		source "${HOME}/.shelltools"
+	elif [[ -f "${MY_DIR}pcd.config" ]]; then
+		# Keep this for downward compatability
+		source ${MY_DIR}pcd.config
 	fi
 }
 
@@ -47,8 +68,10 @@ function initialize {
 	# Load configuration
 	loadConfiguration
 
-	# allexport: Automatically exports all variables and functions that you create or modify after giving this command.
-	set -a
+	if [[ "$PROFILE_SHELL" != "zsh" ]]; then
+		# allexport: Automatically exports all variables and functions that you create or modify after giving this command.
+		set -a
+	fi
 		
 	cdSourceMap=${MY_NAME}_configMap_
 
@@ -74,6 +97,8 @@ function cdSource {
 	#echo "change dir to $project"
 
 	projectPath=$(map_get $cdSourceMap $project)
+
+	#echo "projectPath: $projectPath"
 
 	if [ -n "$projectPath" ]; then
 		echo "cd $projectPath"
@@ -139,6 +164,7 @@ function usageShortlist {
 	for key in ${keys[@]}; do
 		shortlist="${shortlist}${key} "
 	done
+	shortlist="${shortlist} --help --list --dryrun"
 	echo ${shortlist}
 
 	#exit 1
@@ -154,7 +180,7 @@ function parseCommandoLineParameters {
 			--shortlist)
 				PCD_ALREADY_INITIALIZED="";
 				COMMAND="usageShortlist";;
-			--dryrun)
+			--dryrun|--dryRun)
 				DRYRUN=true;;
 			--no-warning)
 				PARAM_NO_WARNING=true;;
