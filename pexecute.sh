@@ -124,6 +124,36 @@ function changeToApplicationDir {
 	APPLICATION_DIR="$(basename `pwd`)"
 }
 
+function changeConsoleTitle {
+	title=$*
+
+	#if [[ "$PROFILE_SHELL" == "zsh" ]]; then
+	#	BACKUP_DISABLE_AUTO_TITLE=$DISABLE_AUTO_TITLE
+	#	export DISABLE_AUTO_TITLE="true"
+	#fi
+
+	chrlen=${#title}
+	if [[ "${chrlen}" -gt "45" ]];then
+		start=${title:0:20}
+		end=${title: -20}
+		consoletitle="${start} ... ${end}"
+	else
+		consoletitle=${title}
+	fi
+	
+	case $TERM in
+		xterm*)
+			print -Pn "\e]0;${APPLICATION_DIR} - ${consoletitle}\a"
+			;;
+	esac
+}
+
+function restoreConsoleTitle {
+	#if [[ "$PROFILE_SHELL" == "zsh" ]]; then
+	#	export DISABLE_AUTO_TITLE=$BACKUP_DISABLE_AUTO_TITLE
+	#fi
+}
+
 function runCommand {
 	runCmd=$*
 
@@ -135,7 +165,11 @@ function runCommand {
 		return
 	fi
 
+	changeConsoleTitle ${runCmd}
+
 	eval ${runCmd}
+
+	restoreConsoleTitle
 }
 
 function buildDefault {
@@ -147,7 +181,6 @@ function buildDefault {
 		runCommand "./gradlew clean compileJava"
 	elif [[ -f "package.json" ]];then
 		#echo "npm pack"
-		#source npm pack
 		runCommand "npm pack"
 	else
 		echo "No project found"
