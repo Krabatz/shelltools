@@ -2,9 +2,9 @@
 
 Useful shell scripts for developers.
 
-## Project Cd, Build, Test, Run, Stop
+## Project Cd, Clean, Build, Test, Run, Stop
 
-The scripts pcd.sh, pbuild.sh, prun.sh and pstop.sh are shortcuts on commandline in order to change dir to a certain project and build, run or stop a certain project. For each project the commands are individully configurable. It has already some default configuration for Maven, Gradle, npm and Vagrant which can be overwritten. The 'p' in pcd stands for 'project'.
+The scripts pcd.sh, pclean.sh, pbuild.sh, prun.sh and pstop.sh are shortcuts on commandline in order to change dir to a certain project and clean, build, run or stop a certain project. For each project the commands are individully configurable. It has already some default configuration for Maven, Gradle, npm and Vagrant which can be overwritten. The 'p' in pcd stands for 'project'.
 
 ### Usage examples
 
@@ -13,6 +13,9 @@ After configuration is done as described below, those use-cases are possible:
 ```console
 ~ $ cdp myproject
 cd /path/to/myproject
+
+/path/to/myproject $ clean
+mvn clean
 
 /path/to/myproject $ build
 mvn clean compile
@@ -48,6 +51,11 @@ Example:
 projectConfigArray=(
     'myproject###/path/to/myproject'
     'myproject2###/path/to/myproject2'
+)
+
+cleanConfigArray=(
+    'myproject###mvn clean'
+    'myproject2###rm -rf node_modules/'
 )
 
 buildConfigArray=(
@@ -111,6 +119,25 @@ This script changes to the configured directory of a certain project.
 ```console
 $ cdp myproject
 cd /path/to/myproject
+```
+
+### pclean.sh
+
+This script executes the configured "pclean.sh" command. If not already there, it changes to the directory of the project in the first place. 
+
+#### Usage example
+
+```console
+$ pclean.sh myproject
+mvn clean
+```
+
+or without parameter if already in project folder:
+
+```console
+$ cd /path/to/myproject2
+$ pclean.sh
+mvn clean
 ```
 
 ### build (pbuild.sh)

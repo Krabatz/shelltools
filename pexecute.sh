@@ -11,7 +11,7 @@
 # Script is not standalone but called by build.sh and run.sh
 # The following variables should be already set from calling script:
 # 	- MY_DIR
-# 	- MY_EXEC_NAME (values: run | stop | build)
+# 	- MY_EXEC_NAME (values: run | stop | build | clean)
 #
 
 MY_LIB_DIR="$MY_DIR"
@@ -99,6 +99,16 @@ function initialize {
 		map_put $configMap ${key} ${value}
 	done
 
+	configMap="clean"_configMap_
+	for line in "${cleanConfigArray[@]}" ; do
+		key="${line%\#\#\#*}"
+		value="${line#*\#\#\#}"
+
+		echo "clean - configMap: $configMap - key: ${key} - value: ${value}"
+
+		map_put $configMap ${key} ${value}
+	done
+
 	configMap="build"_configMap_
 	for line in "${buildConfigArray[@]}" ; do
 		key="${line%\#\#\#*}"
@@ -148,11 +158,11 @@ function changeConsoleTitle {
 	esac
 }
 
-function restoreConsoleTitle {
+#function restoreConsoleTitle {
 	#if [[ "$PROFILE_SHELL" == "zsh" ]]; then
 	#	export DISABLE_AUTO_TITLE=$BACKUP_DISABLE_AUTO_TITLE
-	#fi
-}
+	#fi	
+#}
 
 function runCommand {
 	runCmd=$*
@@ -165,11 +175,15 @@ function runCommand {
 		return
 	fi
 
+	if [[ "${MY_EXEC_NAME}" == "clean" ]];then
+		userInteractionExitOnNo
+	fi
+	
 	changeConsoleTitle ${runCmd}
 
 	eval ${runCmd}
 
-	restoreConsoleTitle
+	#restoreConsoleTitle
 }
 
 function buildDefault {
@@ -187,6 +201,21 @@ function buildDefault {
 	fi
 }
 
+function cleanDefault {
+	if [[ -f "pom.xml" ]];then
+		execCommandStr = "mvn clean"
+	elif [[ -f "build.gradle" ]];then
+		execCommandStr = "./gradlew clean"
+	elif [[ -f "package.json" ]];then
+		execCommandStr = "rm -rf node_modules/"
+	else
+		echo "No command found"
+		return
+	fi
+
+	runCommand ${execCommandStr}
+}
+
 function testDefault {
 	#echo "testDefault"
 
@@ -195,7 +224,7 @@ function testDefault {
 	elif [[ -f "build.gradle" ]];then
 		runCommand "./gradlew test"
 	else
-		echo "No project found"
+		echo "No command found"
 	fi
 }
 
@@ -211,7 +240,7 @@ function runDefault {
 	elif [[ -f "package.json" ]];then
 		runCommand "npm start"
 	else
-		echo "No project found"
+		echo "No command found"
 	fi
 }
 
@@ -225,7 +254,7 @@ function stopDefault {
 	elif [[ -f "package.json" ]];then
 		runCommand "npm stop"
 	else
-		echo "No project found"
+		echo "No command found"
 	fi
 }
 
@@ -286,6 +315,8 @@ function execProjectCmd {
 			stopDefault
 		elif [[ "${MY_EXEC_NAME}" == "test" ]];then
 			testDefault
+		elif [[ "${MY_EXEC_NAME}" == "clean" ]];then
+			cleanDefault
 		else
 			buildDefault
 		fi

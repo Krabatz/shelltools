@@ -23,6 +23,17 @@ fmtNormal=$(tput sgr0; tput setf 0)
 
 ################ Utils methods ################
 
+function userInteractionExitOnNo {
+    while true; do
+        read -p "Do you want to continue? [YyNn]" yn
+        case $yn in
+            [Yy]* ) break;;
+            [Nn]* ) echo "Script aborted."; exit;;
+            * ) echo "Please enter [YyNn].";;
+        esac
+    done
+}
+
 function msg {
 	msg="${fmtMessage}$1${fmtNormal}"
 	echo "${msg}"
