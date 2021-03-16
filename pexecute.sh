@@ -104,7 +104,7 @@ function initialize {
 		key="${line%\#\#\#*}"
 		value="${line#*\#\#\#}"
 
-		echo "clean - configMap: $configMap - key: ${key} - value: ${value}"
+		# echo "clean - configMap: $configMap - key: ${key} - value: ${value}"
 
 		map_put $configMap ${key} ${value}
 	done
