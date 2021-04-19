@@ -2,7 +2,7 @@
 
 Useful shell scripts for developers.
 
-## Project Cd, Clean, Build, Test, Run, Stop
+## Project Cd, Clean, Build, Tests, Run, Stop
 
 The scripts pcd.sh, pclean.sh, pbuild.sh, prun.sh and pstop.sh are shortcuts on commandline in order to change dir to a certain project and clean, build, run or stop a certain project. For each project the commands are individully configurable. It has already some default configuration for Maven, Gradle, npm and Vagrant which can be overwritten. The 'p' in pcd stands for 'project'.
 
@@ -20,7 +20,7 @@ mvn clean
 /path/to/myproject $ build
 mvn clean compile
 
-/path/to/myproject $ testp
+/path/to/myproject $ tests
 mvn test
 
 /path/to/myproject $ run
@@ -63,7 +63,7 @@ buildConfigArray=(
     'myproject2###./gradlew compileJava'
 )
 
-testConfigArray=(
+testsConfigArray=(
     'myproject###mvn test'
     'myproject2###./gradlew test'
 )
@@ -98,7 +98,7 @@ Add the following aliases to your ~/.alias file:
 alias cdp='source pcd.sh'
 alias run='source prun.sh'
 alias build='source pbuild.sh'
-alias testp='source ptest.sh'
+alias tests='source ptests.sh'
 alias stop='source pstop.sh'
 ```
 
@@ -159,14 +159,14 @@ $ build
 mvn clean compile
 ```
 
-### testp (ptest.sh)
+### tests (ptests.sh)
 
-This script executes the configured "test" command. If not already there, it changes to the directory of the project in the first place. 
+This script executes the configured "tests" command. If not already there, it changes to the directory of the project in the first place. 
 
 #### Usage example
 
 ```console
-$ testp myproject
+$ tests myproject
 mvn test
 ```
 
@@ -174,7 +174,7 @@ or without parameter if already in project folder:
 
 ```console
 $ cd /path/to/myproject2
-$ testp
+$ tests
 mvn test
 ```
 
@@ -258,4 +258,4 @@ $ rmvn validate
 
 ## Troubleshooting
 
-The scripts were tested on Windows Git Bash and MacOS.
+The scripts were tested on Windows Git Bash, MacOS and Ubuntu.
