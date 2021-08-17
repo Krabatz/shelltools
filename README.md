@@ -68,6 +68,10 @@ testsConfigArray=(
     'myproject2###./gradlew test'
 )
 
+testAliasConfigArray=(
+    'myproject###mytest###mvn -Dtest=MyTest test'
+)
+
 runConfigArray=(
     'myproject###startproject.sh'
     'myproject2###startproject2.sh'
@@ -176,6 +180,17 @@ or without parameter if already in project folder:
 $ cd /path/to/myproject2
 $ tests
 mvn test
+```
+
+### tests alias
+
+'tests' accepts a paramter in order to test different artifacts for the same project.
+
+#### Usage example
+
+```console
+$ tests mytest
+mvn -Dtest=MyTest test
 ```
 
 ### run (prun.sh)

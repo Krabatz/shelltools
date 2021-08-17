@@ -14,6 +14,10 @@ testConfigArray=(
     'myproject2###./gradlew test'
 )
 
+testAliasConfigArray=(
+    'myproject###mytest###mvn -Dtest=MyTest test'
+)
+
 runConfigArray=(
     'myproject###startproject.sh'
     'myproject2###startproject2.sh'

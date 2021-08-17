@@ -99,6 +99,16 @@ function initialize {
 		map_put $configMap ${key} ${value}
 	done
 
+	configMap="testAlias"_configMap_
+	for line in "${testAliasConfigArray[@]}" ; do
+		key="${line%\#\#\#*}"
+		value="${line#*\#\#\#*\#\#\#}"
+
+		#echo "testAlias - configMap: $configMap - key: ${key} - value: ${value}"
+
+		map_put $configMap ${key} ${value}
+	done
+
 	configMap="clean"_configMap_
 	for line in "${cleanConfigArray[@]}" ; do
 		key="${line%\#\#\#*}"
@@ -194,8 +204,11 @@ function buildDefault {
 	elif [[ -f "build.gradle" ]];then
 		runCommand "./gradlew clean compileJava"
 	elif [[ -f "package.json" ]];then
-		#echo "npm pack"
+		#echo "NPM"
 		runCommand "npm pack"
+	elif [[ -f "Cargo.toml" ]];then
+		#echo "Rust"
+		runCommand "cargo build"
 	else
 		echo "No project found"
 	fi
@@ -223,6 +236,9 @@ function testDefault {
 		runCommand "mvn test"
 	elif [[ -f "build.gradle" ]];then
 		runCommand "./gradlew test"
+	elif [[ -f "Cargo.toml" ]];then
+		#echo "Rust"
+		runCommand "cargo test"
 	else
 		echo "No command found"
 	fi
@@ -239,6 +255,9 @@ function runDefault {
 		runCommand "vagrant up"
 	elif [[ -f "package.json" ]];then
 		runCommand "npm start"
+	elif [[ -f "Cargo.toml" ]];then
+		#echo "Rust"
+		runCommand "cargo run"
 	else
 		echo "No command found"
 	fi
