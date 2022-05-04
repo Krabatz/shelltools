@@ -215,16 +215,19 @@ function buildDefault {
 }
 
 function cleanDefault {
-	if [[ -f "pom.xml" ]];then
-		execCommandStr = "mvn clean"
-	elif [[ -f "build.gradle" ]];then
-		execCommandStr = "./gradlew clean"
-	elif [[ -f "package.json" ]];then
-		execCommandStr = "rm -rf node_modules/"
-	else
-		echo "No command found"
-		return
-	fi
+	#if [[ -f "pom.xml" ]];then
+	#	execCommandStr = "mvn clean"
+	#elif [[ -f "build.gradle" ]];then
+	#	execCommandStr = "./gradlew clean"
+	#elif [[ -f "package.json" ]];then
+	#	execCommandStr = "rm -rf node_modules/"
+	#else
+	#	echo "No command found"
+	#	return
+	#fi
+
+	echo "No command found"
+	return
 
 	runCommand ${execCommandStr}
 }
