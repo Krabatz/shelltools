@@ -185,9 +185,9 @@ function runCommand {
 		return
 	fi
 
-	if [[ "${MY_EXEC_NAME}" == "clean" ]];then
-		userInteractionExitOnNo
-	fi
+	#if [[ "${MY_EXEC_NAME}" == "clean" ]];then
+	#	userInteractionExitOnNo
+	#fi
 	
 	changeConsoleTitle ${runCmd}
 
